@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
 import VendorCard from './VendorCard.js';
-import { StyleSheet, View, Animated, Image, Dimensions } from "react-native";
+import { StyleSheet, View, Animated, Image, Dimensions, Text } from "react-native";
 import { SCREEN_INFO, LOCATION_CONST, GlobalVars, GlobalVars1 } from '../../../AppContants/constants.js';
 import { connect } from 'react-redux';
-
-
-
-const Images = [
-    { uri: "https://i.imgur.com/sNam9iJ.jpg" },
-    { uri: "https://i.imgur.com/N7rlQYt.jpg" },
-    { uri: "https://i.imgur.com/UDrH0wm.jpg" },
-    { uri: "https://i.imgur.com/Ka8kNST.jpg" }
-];
-
-// class GlobalVars1{
-//     static MapAnimation;
-// }
+import Carousel from 'react-native-snap-carousel';
 
 class ScrollVendorCards extends Component {
     constructor(props) {
@@ -56,46 +44,61 @@ class ScrollVendorCards extends Component {
         });
       }
 
+    _renderItem ({item, index}) {
+        return (
+            <VendorCard vendorCardInfo={item} key={index}/>
+        );
+    }
+
+    _centerMapOnMarker (index) {
+        const markerData = this.props.vendorListData.filteredVendorList[index];
+
+        if (!markerData || !GlobalVars.mapRef) {
+            return;
+        }
+        // mapRef.animateToRegion({
+        //     latitude: markerData.geolocation.latitude - CENTER_LAT_OFFSET,
+        //     longitude: markerData.geolocation.longitude,
+        //     latitudeDelta: 0.0315,
+        //     longitudeDelta: 0.0258
+        // });
 
 
-    // <List style={styles.scrollCards} dataArray={vendorScrollList} horizontal={true}
-    //             renderRow={(newVendorInfo) =>{
-    //                 { console.log("vendorInfo"+JSON.stringify(newVendorInfo)) }
-    //                 return <VendorCard vendorCardInfo={newVendorInfo}/>;
-    //                 }
-                
-    //             }>
-    //         </List>
+        const coordinate = markerData.location;
+
+        console.log("animate to coordinate"+ JSON.stringify(coordinate));
+
+        GlobalVars.mapRef.animateToRegion(
+            {
+            ...coordinate,
+            latitudeDelta: LOCATION_CONST.GEO_DELTA.latitudeDelta,
+            longitudeDelta: LOCATION_CONST.GEO_DELTA.longitudeDelta,
+            },
+            50
+        );
+    }
+
 
 
     render() {
         return (
-            <Animated.ScrollView
-                horizontal
-                scrollEventThrottle={1}
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={SCREEN_INFO.CARD_WIDTH}
-                onScroll={Animated.event(
-                    [
-                        {
-                            nativeEvent: {
-                                contentOffset: {
-                                    x: GlobalVars.MapAnimation,
-                                },
-                            },
-                        }
-                    ],
-                    { useNativeDriver: true }
-                )}
-                style={styles.scrollView}
-                contentContainerStyle={styles.endPadding}
-            >
-                {this.props.vendorListData.filteredVendorList.map((newVendorInfo, index) => (
+           
 
-                    <VendorCard vendorCardInfo={newVendorInfo} key={index}/>
-                    
-                ))}
-            </Animated.ScrollView>
+
+
+
+
+            <View style={styles.scrollView}>
+                <Carousel
+                    ref={(c) => { this._carousel = c; }}
+                    data={this.props.vendorListData.filteredVendorList}
+                    renderItem={this._renderItem}
+                    sliderWidth={SCREEN_INFO.WIDTH}
+                    itemWidth={SCREEN_INFO.CARD_WIDTH}
+                    style={{ flex: 1 }}
+                    onSnapToItem={(index, marker) => this._centerMapOnMarker(index)}
+                />
+            </View>
         );
     }
 }
@@ -113,30 +116,6 @@ export default connect(
 )(ScrollVendorCards);
 
 
-// const styles = {
-//     scrollCards:{
-//         marginBottom:10,
-//         bottom:70,
-//         position:"absolute"
-//     }
-//   };
-
-
-// <View style={styles.card} key={index}>
-//                         <Image
-//                             source={marker.image}
-//                             style={styles.cardImage}
-//                             resizeMode="cover"
-//                         />
-//                         <View style={styles.textContent}>
-//                             <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
-//                             <Text numberOfLines={1} style={styles.cardDescription}>
-//                             {marker.description}
-//                             </Text>
-//                         </View>
-//                     </View>
-
-
 
 
   const styles = StyleSheet.create({
@@ -151,9 +130,7 @@ export default connect(
     scrollView: {
       position: "absolute",
       bottom: 70,
-      left: 0,
-      right: 0,
-      paddingVertical: 10,
+      height: SCREEN_INFO.CARD_HEIGHT+15
     },
     endPadding: {
       paddingRight: SCREEN_INFO.WIDTH - SCREEN_INFO.CARD_WIDTH,
@@ -209,128 +186,3 @@ export default connect(
       borderColor: "rgba(130,4,150, 0.5)",
     },
   });
-
-
-
-
-
-
-
-
-
-  const newVendorInfo1 = { 
-    id: 12345,
-    name: 'Ram',
-    shop_name: 'paper wala',
-    shop_description: 'about vendor buying paper',
-    categoryId: 1,
-    mode: 'cycle',
-    location:{
-        latitude: 12.987537,
-        longitude: 77.685677
-    },
-    rating: 4.36,
-    contact: 123456777
-};
-
-
-const vendorScrollList = [
-    { 
-        id: 12345,
-        name: 'Ram',
-        shop_name: 'paper wala',
-        shop_description: 'about vendor buying paper',
-        categoryId: 1,
-        mode: 'cycle',
-        location:{
-            latitude: 12.987537,
-            longitude: 77.685677
-        },
-        rating: 4.36,
-        contact: 123456777
-    },
-    { 
-        id: 123456,
-        name: 'Hema',
-        shop_name: 'vegetable wala',
-        shop_description: 'about vendor selling vegetable',
-        categoryId: 2,
-        mode: 'walking',
-        location:{
-            latitude: 12.989338,
-            longitude: 77.688951
-        },
-        rating: 3.36,
-        contact: 123456888
-    },
-    { 
-        id: 1234567,
-        name: 'Hari',
-        shop_name: 'icecream wala',
-        shop_description: 'about vendor selling icecream',
-        categoryId: 3,
-        mode: 'motor',
-        location:{
-            latitude: 12.985154,
-            longitude: 77.691329
-        },
-        rating: 5.00,
-        contact: 123456999
-    },
-    { 
-        id: 12345545,
-        name: 'Ram',
-        shop_name: 'paper wala',
-        shop_description: 'about vendor buying paper',
-        categoryId: 4,
-        mode: 'cycle',
-        location:{
-            latitude: 12.989225,
-            longitude: 77.687068
-        },
-        rating: 4.36,
-        contact: 123456777
-    },
-    { 
-        id: 123456454,
-        name: 'Hema',
-        shop_name: 'vegetable wala',
-        shop_description: 'about vendor selling vegetable',
-        categoryId: 5,
-        mode: 'walking',
-        location:{
-            latitude: 12.985772,
-            longitude: 77.687379
-        },
-        rating: 3.36,
-        contact: 123456888
-    },
-    { 
-        id: 12345673232,
-        name: 'Hari',
-        shop_name: 'icecream wala',
-        shop_description: 'about vendor selling icecream',
-        categoryId: 6,
-        mode: 'motor',
-        location:{
-            latitude: 12.988920,
-            longitude: 77.692491
-        },
-        rating: 5.00,
-        contact: 123456999
-    },
-    { 
-        id: 1234567124,
-        name: 'Hari',
-        shop_name: 'icecream wala',
-        shop_description: 'about vendor selling icecream',
-        categoryId: 7   ,
-        mode: 'motor',
-        location:{
-            latitude: 12.985206,
-            longitude: 77.693501
-        },
-        rating: 5.00,
-        contact: 123456999
-    }
-  ];
