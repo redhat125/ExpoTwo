@@ -12,7 +12,7 @@ export default class VendorCard extends Component {
   render() {
     return (
         <Card vendorId={this.props.vendorCardInfo.id} style={styles.card}>
-          <CardItem header bordered>
+          <CardItem header bordered button onPress={this.props.cardClick.bind(this)}>
             <Left>
               <Thumbnail source={{uri: "https://raw.githubusercontent.com/GeekyAnts/NativeBase-KitchenSink/master/assets/drawer-cover.png"}} />
               <Body>
@@ -24,6 +24,22 @@ export default class VendorCard extends Component {
               <Icon active name="thumbs-up" />
               <Text>{this.props.vendorCardInfo.rating}</Text>
             </Right>
+          </CardItem>
+          <CardItem cardBody style={styles.cardBoxBody}>
+            <Body>
+              <Text>{this.props.vendorCardInfo.name}</Text>
+              <Text note>{this.props.vendorCardInfo.shop_description}</Text>
+              <Text note>{this.props.vendorCardInfo.contact}</Text>
+              <Text note>{this.props.vendorCardInfo.mode}</Text>
+            </Body>
+          </CardItem>
+          <CardItem cardBody style={styles.cardBoxBody}>
+            <Body>
+              <Text>{this.props.vendorCardInfo.name}</Text>
+              <Text note>{this.props.vendorCardInfo.shop_description}</Text>
+              <Text note>{this.props.vendorCardInfo.contact}</Text>
+              <Text note>{this.props.vendorCardInfo.mode}</Text>
+            </Body>
           </CardItem>
           <CardItem cardBody style={styles.cardBoxBody}>
             <Body>
@@ -77,7 +93,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.3,
     shadowOffset: { x: 2, y: -2 },
-    height: SCREEN_INFO.CARD_HEIGHT,
+    height: SCREEN_INFO.HEIGHT-100,
     width: SCREEN_INFO.CARD_WIDTH,
     overflow: "hidden",
   },

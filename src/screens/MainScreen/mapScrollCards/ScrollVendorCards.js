@@ -10,6 +10,11 @@ class ScrollVendorCards extends Component {
     constructor(props) {
         super(props);
         this.index = 0;
+        this._renderItem = this._renderItem.bind(this);
+        this.toggelCard = this.toggelCard.bind(this);
+
+        this.card_Ytranslate = new Animated.Value(0);
+        this.card_expanded = false;
     }
 
     componentDidMount() {
@@ -33,20 +38,45 @@ class ScrollVendorCards extends Component {
         }
     }
 
+    toggelCard(){
+        console.log("card toggled");
+        this.card_expanded = !this.card_expanded;
+        this.card_Ytranslate.setValue((this.card_expanded)?1:0);
+        Animated.spring(
+        this.card_Ytranslate,
+        {
+            toValue: (this.card_expanded)?0:1,
+            friction: (this.card_expanded)?3:2
+        }
+        ).start();
+        console.log("card toggled done");
+    };
+
     _renderItem ({item, index}) {
         return (
-            <VendorCard vendorCardInfo={item} key={index}/>
-            //<DraggableBox key={index}/>
+            <VendorCard vendorCardInfo={item} key={index} cardClick={this.toggelCard}/>
         );
     }
 
-    
-
-
-
     render() {
+        const card_moveY = this.card_Ytranslate.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, -(SCREEN_INFO.HEIGHT-(110+SCREEN_INFO.CARD_HEIGHT))]
+        });
+
         return (
-            <View style={styles.scrollView}>
+            <Animated.View 
+                style={[ 
+                    styles.scrollView,
+                    {
+                    transform: [
+                        {
+                            translateY: card_moveY
+                        }
+                    ]
+                    }
+                ]}
+            >
                 <Carousel
                     ref={(c) => { this._carousel = c; }}
                     data={this.props.vendorListData.filteredVendorList}
@@ -56,7 +86,7 @@ class ScrollVendorCards extends Component {
                     style={{ flex: 1 }}
                     onSnapToItem={(index, marker) => this._centerMapOnMarker(index)}
                 />
-            </View>
+            </Animated.View>
         );
     }
 }
@@ -73,13 +103,10 @@ export default connect(
   mapStateToProps
 )(ScrollVendorCards);
 
-
-
-
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     scrollView: {
-      position: "absolute",
-      bottom: 70,
-      height: SCREEN_INFO.CARD_HEIGHT+15
+        position: "absolute",
+        bottom: -(SCREEN_INFO.HEIGHT-(190+SCREEN_INFO.CARD_HEIGHT)),
+        height: SCREEN_INFO.HEIGHT-100
     }
-  });
+});
