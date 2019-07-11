@@ -2,6 +2,7 @@ import React from "react";
 import MainScreen from "./MainScreen.js";
 import SettingScreen from "../SettingScreen/SettingScreen.js";
 import AboutScreen from "../AboutScreen/index.js";
+import {Example} from "../AboutScreen/DraggableBox.js";
 import DrawerScreen from "../DrawerScreen/DrawerScreen.js";
 import { createStackNavigator, createBottomTabNavigator, createDrawerNavigator } from 'react-navigation';
 
