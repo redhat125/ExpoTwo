@@ -2,7 +2,7 @@ export function getVendorsList(currLocation){
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             //console.log("dummy vedndor data "+ JSON.stringify(vendorList));
-        return resolve(vendorList);
+            return resolve(vendorList);
         }, 3000);
     });
 }

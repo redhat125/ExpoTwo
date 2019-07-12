@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import VendorCard from './VendorCard.js';
 import {DraggableBox} from '../../AboutScreen/DraggableBox.js';
-import { StyleSheet, View, Animated, Image, Dimensions, Text } from "react-native";
+import { StyleSheet, View, Animated, Image, Dimensions, Text, Easing } from "react-native";
 import { SCREEN_INFO, LOCATION_CONST, GlobalVars, GlobalVars1 } from '../../../AppContants/constants.js';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
@@ -12,6 +12,7 @@ class ScrollVendorCards extends Component {
         this.index = 0;
         this._renderItem = this._renderItem.bind(this);
         this.toggelCard = this.toggelCard.bind(this);
+        //this.zoomVendorMarker = this.zoomVendorMarker.bind(this);
 
         this.card_Ytranslate = new Animated.Value(0);
         this.card_expanded = false;
@@ -20,13 +21,11 @@ class ScrollVendorCards extends Component {
     componentDidMount() {
         this._centerMapOnMarker = (index) => {
             const markerData = this.props.vendorListData.filteredVendorList[index];
-    
-            if (!markerData || !GlobalVars.mapRef) {
+            if (!markerData || !GlobalVars.mapRef)
                 return;
-            }
+
             const coordinate = markerData.location;
-            console.log("animate to coordinate"+ JSON.stringify(coordinate));
-    
+            //console.log("animate to coordinate"+ JSON.stringify(coordinate));
             GlobalVars.mapRef.animateToRegion(
                 {
                     ...coordinate,
@@ -35,21 +34,37 @@ class ScrollVendorCards extends Component {
                 },
                 350
             );
+
+            this.zoomVendorMarker(index);
         }
     }
 
+    zoomVendorMarker(index){
+        //console.log("inside zoomVendorMarker");
+        GlobalVars.MapAnimation.setValue(0);
+        Animated.timing(
+            GlobalVars.MapAnimation,
+            {
+                toValue: index,
+                duration: 350,
+                easing: Easing.easeOutCubic
+            }
+        ).start();
+        //console.log("zoomVendorMarker toggled done");
+    };
+
     toggelCard(){
-        console.log("card toggled");
+        //console.log("card toggled");
         this.card_expanded = !this.card_expanded;
         this.card_Ytranslate.setValue((this.card_expanded)?1:0);
         Animated.spring(
-        this.card_Ytranslate,
-        {
-            toValue: (this.card_expanded)?0:1,
-            friction: (this.card_expanded)?3:2
-        }
+            this.card_Ytranslate,
+            {
+                toValue: (this.card_expanded)?0:1,
+                friction: (this.card_expanded)?3:2
+            }
         ).start();
-        console.log("card toggled done");
+        //console.log("card toggled done");
     };
 
     _renderItem ({item, index}) {

@@ -9,7 +9,7 @@ import {
   Content,
   Icon
 } from "native-base";
-const routes = ["Main", "Setting", "About"];
+const routes = ["Main", "Setting", "About", "MapScreen"];
 export default class DrawerScreen extends React.Component {
   render() {
     return (

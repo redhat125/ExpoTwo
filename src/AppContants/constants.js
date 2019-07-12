@@ -64,3 +64,13 @@ export class GlobalVars1{
     static vendorIndex = 0;
     static mapRef;
 }
+
+export const BtnInfoList = [
+    {categoryId: 0, type:'All',logo:'person'},
+    {categoryId: 1, type:'Cold',logo:'beer'},
+    {categoryId: 2, type:'Hot', logo:'flame'},
+    {categoryId: 3, type:'Paper', logo:'paper'},
+    {categoryId: 4, type:'Food', logo:'nutrition'},
+    {categoryId: 5, type:'Baked', logo:'pizza'},
+    {categoryId: 6, type:'Juice', logo:'glasses'},
+    {categoryId: 7, type:'Fruits', logo:'logo-apple'}];

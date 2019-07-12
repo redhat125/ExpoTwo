@@ -22,32 +22,20 @@ import {
   View
 } from "react-native";
 import { connect } from 'react-redux';
-import {getFilteredVendorList} from '../../AppUtils/Actions/vendorActions.js'
+import {getFilteredVendorList} from '../../AppUtils/Actions/vendorActions.js';
+import {BtnInfoList} from '../../AppContants/constants.js';
 
 
 const items = ["Main", "Setting", "About", "Main", "Setting", "About"];
 const vendorTypes = ["Cold", "Hot", "Paper", "Food", "Baked", "Vegetables", "Fruits", "Juice"];
 const itemLogos = ["beer", "flame", "paper", "nutrition", "pizza", "person", "logo-apple", "glasses"];
 
-const btnInfoList = [
- {categoryId: 0, type:'All',logo:'person'},
- {categoryId: 1, type:'Cold',logo:'beer'},
- {categoryId: 2, type:'Hot', logo:'flame'},
- {categoryId: 3, type:'Paper', logo:'paper'},
- {categoryId: 4, type:'Food', logo:'nutrition'},
- {categoryId: 5, type:'Baked', logo:'pizza'},
- {categoryId: 6, type:'Juice', logo:'glasses'},
- {categoryId: 7, type:'Fruits', logo:'logo-apple'}];
-
-
-
-
 export class MainFooter extends React.Component {
   render() {
     return (
         <Footer style={styles.footerMain}>
             <FooterTab>
-            <List dataArray={btnInfoList} horizontal={true}
+            <List dataArray={BtnInfoList} horizontal={true}
                 renderRow={(btnInfo) =>
                   <View style={styles.buttonBox}>
                         <Button
